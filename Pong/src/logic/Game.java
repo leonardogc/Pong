@@ -24,10 +24,11 @@ public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
 
 public boolean ai_enabled = true;
-public boolean run_sim = true;
-public double target_y=0;
+public boolean run_sim;
+public double target_y;
 
 public Game(){
+	run_sim = true;
 	
 	double angle = new Random().nextInt(121)-60;
 	double side = new Random().nextInt(2);
