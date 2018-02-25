@@ -23,9 +23,11 @@ public double ball_vel=800;
 public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
 
-public boolean ai_enabled = true;
+public boolean ai_paddle_1_enabled = true;
+public boolean ai_paddle_2_enabled = false;
 public boolean run_sim;
-public double target_y;
+public double target_y_paddle_1;
+public double target_y_paddle_2;
 
 public Game(){
 	run_sim = true;
@@ -66,7 +68,7 @@ public void update(double t){
 	
 	update_obstacle_collisions();
 	update_paddle_collisions();
-	if(run_sim && ai_enabled) {
+	if(run_sim && (ai_paddle_1_enabled || ai_paddle_2_enabled)) {
 		run_sim();
 	}
 }
@@ -95,27 +97,46 @@ public void run_sim() {
 	
 	if(g.ball.pos[0] <= g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2) {
 		int hit = new Random().nextInt(7)-3;
-		target_y=g.ball.pos[1]+hit*paddle_1.size[1]/9;
-	}else {
-		target_y=paddle_1.pos[1];
+		target_y_paddle_1=g.ball.pos[1]+hit*paddle_1.size[1]/9;
+		target_y_paddle_2=paddle_2.pos[1];
+	}
+	else if(g.ball.pos[0] >= g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2){
+		int hit = new Random().nextInt(7)-3;
+		target_y_paddle_2=g.ball.pos[1]+hit*paddle_2.size[1]/9;
+		target_y_paddle_1=paddle_1.pos[1];
 	}
 	
 	run_sim=false;
 }
 
 public void update_paddle_pos(double t) {
-	if(ai_enabled) {
-		if(paddle_1.pos[1] < target_y-1) {
+	if(ai_paddle_1_enabled) {
+		if(paddle_1.pos[1] < target_y_paddle_1-1) {
 			paddle_1.move_down=true;
 			paddle_1.move_up=false;
 		}
-		else if(paddle_1.pos[1] > target_y+1) {
+		else if(paddle_1.pos[1] > target_y_paddle_1+1) {
 			paddle_1.move_down=false;
 			paddle_1.move_up=true;
 		}
 		else {
 			paddle_1.move_down=false;
 			paddle_1.move_up=false;
+		}
+	}
+	
+	if(ai_paddle_2_enabled) {
+		if(paddle_2.pos[1] < target_y_paddle_2-1) {
+			paddle_2.move_down=true;
+			paddle_2.move_up=false;
+		}
+		else if(paddle_2.pos[1] > target_y_paddle_2+1) {
+			paddle_2.move_down=false;
+			paddle_2.move_up=true;
+		}
+		else {
+			paddle_2.move_down=false;
+			paddle_2.move_up=false;
 		}
 	}
 	

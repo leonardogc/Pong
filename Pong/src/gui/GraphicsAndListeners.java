@@ -143,20 +143,24 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 			}
 			break;
 		case KeyEvent.VK_W:
-			if(!game.ai_enabled) {
+			if(!game.ai_paddle_1_enabled) {
 				game.paddle_1.move_up=true;
 			}
 			break;
 		case KeyEvent.VK_S:
-			if(!game.ai_enabled) {
+			if(!game.ai_paddle_1_enabled) {
 				game.paddle_1.move_down=true;
 			}
 			break;
 		case KeyEvent.VK_UP:
-			game.paddle_2.move_up=true;
+			if(!game.ai_paddle_2_enabled) {
+				game.paddle_2.move_up=true;
+			}
 			break;
 		case KeyEvent.VK_DOWN:
-			game.paddle_2.move_down=true;
+			if(!game.ai_paddle_2_enabled) {
+				game.paddle_2.move_down=true;
+			}
 			break;
 		}
 	}
@@ -165,20 +169,24 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	public void keyReleased(KeyEvent arg0) {
 		switch(arg0.getKeyCode()){ 	
 		case KeyEvent.VK_W:
-			if(!game.ai_enabled) {
+			if(!game.ai_paddle_1_enabled) {
 				game.paddle_1.move_up=false;
 			}
 			break;
 		case KeyEvent.VK_S:
-			if(!game.ai_enabled) {
+			if(!game.ai_paddle_1_enabled) {
 				game.paddle_1.move_down=false;
 			}
 			break;
 		case KeyEvent.VK_UP:
-			game.paddle_2.move_up=false;
+			if(!game.ai_paddle_2_enabled) {
+				game.paddle_2.move_up=false;
+			}
 			break;
 		case KeyEvent.VK_DOWN:
-			game.paddle_2.move_down=false;
+			if(!game.ai_paddle_2_enabled) {
+				game.paddle_2.move_down=false;
+			}
 			break;
 		}
 	}
