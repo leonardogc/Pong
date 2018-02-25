@@ -19,6 +19,7 @@ public double paddle_size_x=15;
 public double paddle_size_y=150;
 public double paddle_vel=500;
 public double ball_vel=800;
+public double obstacle_rotations_per_second=0.1;
 
 public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
@@ -65,6 +66,7 @@ public Game(){
 public void update(double t){
 	ball.update_Pos(t);
 	update_paddle_pos(t);
+	update_obstacle_pos(t);
 	
 	update_obstacle_collisions();
 	update_paddle_collisions();
@@ -75,15 +77,71 @@ public void update(double t){
 	}
 }
 
+public void update_obstacle_pos(double t) {
+	double angle = obstacle_rotations_per_second*2*Math.PI*t;
+	double point_of_rotation_x;
+	double point_of_rotation_y;
+	
+	double v1_x;
+	double v1_y;
+	
+	double v2_x;
+	double v2_y;
+	
+	for(int i =0 ; i<obstacles.size();i++) {
+		if(obstacles.get(i).points.size() > 2) {
+			point_of_rotation_x=0;
+			point_of_rotation_y=0;
+			
+			for(int i2=0; i2 < obstacles.get(i).points.size(); i2++) {
+				point_of_rotation_x+=obstacles.get(i).points.get(i2)[0];
+				point_of_rotation_y+=obstacles.get(i).points.get(i2)[1];
+			}
+			
+			point_of_rotation_x/=obstacles.get(i).points.size();
+			point_of_rotation_y/=obstacles.get(i).points.size();
+			
+			for(int i2=0; i2 < obstacles.get(i).points.size(); i2++) {
+				v1_x=obstacles.get(i).points.get(i2)[0]-point_of_rotation_x;
+				v1_y=obstacles.get(i).points.get(i2)[1]-point_of_rotation_y;
+				
+				v2_x=Math.cos(angle)*v1_x-Math.sin(angle)*v1_y;
+				v2_y=Math.sin(angle)*v1_x+Math.cos(angle)*v1_y;
+				
+				obstacles.get(i).points.get(i2)[0]=point_of_rotation_x+v2_x;
+				obstacles.get(i).points.get(i2)[1]=point_of_rotation_y+v2_y;
+			}
+		}
+	}
+	
+}
+
 public void run_sim(double t) {
 	Game g = new Game();
-	g.obstacles=obstacles;
+	
+	for(int i=0; i< obstacles.size(); i++) {
+		Vector <double[]> points=new Vector<double[]>();
+		
+		for(int i2=0; i2< obstacles.get(i).points.size();i2++) {
+			double[] point = new double[obstacles.get(i).points.get(i2).length];
+			
+			for(int i3=0; i3< obstacles.get(i).points.get(i2).length ;i3++) {
+				point[i3]=obstacles.get(i).points.get(i2)[i3];
+			}
+			
+			points.add(point);
+		}
+		
+		g.obstacles.add(new Obstacle(points));
+	}
+	
 	g.ball.pos=new double[] {ball.pos[0], ball.pos[1]};
 	g.ball.vel=new double[] {ball.vel[0], ball.vel[1]};
 	
 	
 	while(!(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2)) {
 		g.ball.update_Pos(t);
+		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
 		
 		if(g.ball.pos[0] > g.dx+g.game_size[0] || g.ball.pos[0] < g.dx) {
@@ -93,6 +151,7 @@ public void run_sim(double t) {
 
 	while(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2) {
 		g.ball.update_Pos(t);
+		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
 	}
 		
