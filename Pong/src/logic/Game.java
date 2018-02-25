@@ -68,12 +68,14 @@ public void update(double t){
 	
 	update_obstacle_collisions();
 	update_paddle_collisions();
+	
+	
 	if(run_sim && (ai_paddle_1_enabled || ai_paddle_2_enabled)) {
-		run_sim();
+		run_sim(t);
 	}
 }
 
-public void run_sim() {
+public void run_sim(double t) {
 	Game g = new Game();
 	g.obstacles=obstacles;
 	g.ball.pos=new double[] {ball.pos[0], ball.pos[1]};
@@ -81,7 +83,7 @@ public void run_sim() {
 	
 	
 	while(!(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2)) {
-		g.ball.update_Pos((double)1/(double)400);
+		g.ball.update_Pos(t);
 		g.update_obstacle_collisions();
 		
 		if(g.ball.pos[0] > g.dx+g.game_size[0] || g.ball.pos[0] < g.dx) {
@@ -90,7 +92,7 @@ public void run_sim() {
 	}
 
 	while(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2) {
-		g.ball.update_Pos((double)1/(double)400);
+		g.ball.update_Pos(t);
 		g.update_obstacle_collisions();
 	}
 		
