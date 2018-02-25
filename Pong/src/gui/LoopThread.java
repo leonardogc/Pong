@@ -7,12 +7,10 @@ public class LoopThread extends Thread{
 	 private boolean running;
 	 private double max_fps;
 	 private GraphicsAndListeners g;
-	 private int numberOfParticles; 
 
 	public LoopThread(GraphicsAndListeners g){
 		   running=false;
-	       max_fps=120;
-	       numberOfParticles=0;
+	       max_fps=400;
 	       this.g=g;
 	}
 	
@@ -54,10 +52,6 @@ public class LoopThread extends Thread{
 	            		counter++;
 	            	}
 
-	            	if(numberOfParticles!=g.space.particles.size()){
-	            		numberOfParticles=g.space.particles.size();
-	            		System.out.println("Number of Particles: "+numberOfParticles);
-	            	}
 	            }
 	            
 	            g.repaint();

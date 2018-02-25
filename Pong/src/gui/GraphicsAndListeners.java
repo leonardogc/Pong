@@ -16,22 +16,15 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import logic.Obstacle;
-import logic.Space;
-import logic.Space.Gravity;
+import logic.Game;
 
-public class GraphicsAndListeners extends JPanel implements KeyListener, MouseListener, ActionListener, MouseMotionListener{
+public class GraphicsAndListeners extends JPanel implements KeyListener, MouseListener{
 	
-	public Space space;
+	public Game space;
 	public GraphicInterface graphics;
 	public boolean playing;
-	private int x;
-	private int y;
-	private int dx;
-	private int dy;
-	private double scaleFactor;
 	private LoopThread thread;
 	public int pictureNumber; //only used for taking pictures
 	public boolean take_pictures;
@@ -43,19 +36,13 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	public GraphicsAndListeners(GraphicInterface g){
 		addKeyListener(this);
 		addMouseListener(this);
-		addMouseMotionListener(this);
 	
 		creating_obstacle=false;
 		
-		space=new Space();
+		space=new Game();
 		this.graphics=g;
 		
 		playing=false;
-		
-		dx=0;
-		dy=0;
-		
-		scaleFactor=1;
 		
 		pictureNumber=1;
 		take_pictures=false;
@@ -66,55 +53,37 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	}
 	
 	
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
-	 super.paintComponent(g);
-	 
-	for(int i=0;i<space.particles.size();i++){
-		
-		g.setColor(space.particles.get(i).color);
-		
-		g.fillOval((int)((space.particles.get(i).pos[0]-space.particles.get(i).diameter/2)*scaleFactor+dx),
-			    (int)((space.particles.get(i).pos[1]-space.particles.get(i).diameter/2)*scaleFactor+dy),
-			    (int)(space.particles.get(i).diameter*scaleFactor), 
-			    (int)(space.particles.get(i).diameter*scaleFactor));
-	}
+		super.paintComponent(g);
 
-	if(playing && space.draw_grid==true && space.gravity==Gravity.Tree) {
 		g.setColor(Color.BLACK);
-		
-		for(int i =0 ; i<space.octree.squares.size();i++) {
-			g.drawRect((int)((space.octree.squares.get(i)[0]-(space.octree.squares.get(i)[2]/2))*scaleFactor+dx),
-					   (int)((space.octree.squares.get(i)[1]-(space.octree.squares.get(i)[2]/2))*scaleFactor+dy),
-					   (int)(space.octree.squares.get(i)[2]*scaleFactor),
-					   (int)(space.octree.squares.get(i)[2]*scaleFactor));
-		}
-	}
-	
-	if(space.enable_obstacles) {
+
+		g.fillOval((int)(space.ball.pos[0]-space.ball.diameter/2),
+				(int)(space.ball.pos[1]-space.ball.diameter/2),
+				(int)(space.ball.diameter), 
+				(int)(space.ball.diameter));
+
 		if(creating_obstacle) {
-			g.setColor(Color.BLACK);
 			for(int i =0 ; i< points.size();i++) {
-				g.fillOval((int)(points.get(i)[0]*scaleFactor+dx), (int)(points.get(i)[1]*scaleFactor+dy), 5, 5);
+				g.fillOval((int)(points.get(i)[0]-2.5), (int)(points.get(i)[1]-2.5), 5, 5);
 			}
 		}
-		
+
 		for(int i =0 ; i<space.obstacles.size();i++) {
 			g.setColor(Color.BLACK);
-			
+
 			int[] x=new int[space.obstacles.get(i).points.size()];
 			int[] y=new int[space.obstacles.get(i).points.size()];
-			
+
 			for(int i2 = 0; i2< space.obstacles.get(i).points.size(); i2++) {
-				x[i2]=(int)(space.obstacles.get(i).points.get(i2)[0]*scaleFactor+dx);
-				y[i2]=(int)(space.obstacles.get(i).points.get(i2)[1]*scaleFactor+dy);
+				x[i2]=(int)(space.obstacles.get(i).points.get(i2)[0]);
+				y[i2]=(int)(space.obstacles.get(i).points.get(i2)[1]);
 			}
-			
+
 			g.drawPolygon(x,y,space.obstacles.get(i).points.size());
 		}
-	}
-	
 	}
 
 	@Override
@@ -132,14 +101,8 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		break;  
 		case KeyEvent.VK_LEFT:
 			playing=false;
-			space=new Space();
+			space=new Game();
 			break;
-		case KeyEvent.VK_UP:
-			scaleFactor*=1.1;
-			break;
-		case KeyEvent.VK_DOWN:
-			scaleFactor/=1.1;
-			break;	
 		case KeyEvent.VK_P:
 			this.take_pictures=!this.take_pictures;
 			
@@ -151,7 +114,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 			}
 			break;
 		case KeyEvent.VK_O:
-			if(space.enable_obstacles && !playing) {
+			if(!playing) {
 				if(creating_obstacle) {
 					if(points.size() > 2) {
 						Obstacle o = new Obstacle(points);
@@ -210,11 +173,9 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		graphics.panel.requestFocusInWindow();
-		x=arg0.getX();
-		y=arg0.getY();
 		
 		if(creating_obstacle) {
-			points.add(new double[] {(arg0.getX()-dx)/scaleFactor,(arg0.getY()-dy)/scaleFactor});
+			points.add(new double[] {arg0.getX(), arg0.getY()});
 		}
 	}
 
@@ -224,12 +185,6 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		// TODO Auto-generated method stub
 	}
 
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public void takePicture() {
 	    BufferedImage img = new BufferedImage(graphics.panel.getWidth(), graphics.panel.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -242,26 +197,6 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
-	}
-
-
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		dx=dx+(e.getX()-x);
-		dy=dy+(e.getY()-y);
-		
-		x=e.getX();
-		y=e.getY();
-	}
-
-
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
