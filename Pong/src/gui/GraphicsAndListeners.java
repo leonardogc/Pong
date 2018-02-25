@@ -57,9 +57,36 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		for(int i =0 ; i<game.obstacles.size();i++) {
 
+			int[] x=new int[game.obstacles.get(i).points.size()];
+			int[] y=new int[game.obstacles.get(i).points.size()];
+
+			for(int i2 = 0; i2< game.obstacles.get(i).points.size(); i2++) {
+				x[i2]=(int)(game.obstacles.get(i).points.get(i2)[0]);
+				y[i2]=(int)(game.obstacles.get(i).points.get(i2)[1]);
+			}
+			
+			if(game.obstacles.get(i).points.size()==2) {
+				g.setColor(Color.BLACK);
+			}
+			else {
+				g.setColor(Color.ORANGE);
+			}
+
+			g.fillPolygon(x,y,game.obstacles.get(i).points.size());
+			g.drawPolygon(x,y,game.obstacles.get(i).points.size());
+		}
+		
 		g.setColor(Color.BLACK);
-
+		
+		if(creating_obstacle) {
+			for(int i =0 ; i< points.size();i++) {
+				g.fillOval((int)(points.get(i)[0]-2.5), (int)(points.get(i)[1]-2.5), 5, 5);
+			}
+		}
+		
 		g.fillOval((int)(game.ball.pos[0]-game.ball.diameter/2),
 				(int)(game.ball.pos[1]-game.ball.diameter/2),
 				(int)(game.ball.diameter), 
@@ -70,26 +97,6 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		
 		//g.drawRect((int)(game.dx), (int)(game.dy), (int)game.game_size[0], (int)game.game_size[1]);
 		
-		
-		if(creating_obstacle) {
-			for(int i =0 ; i< points.size();i++) {
-				g.fillOval((int)(points.get(i)[0]-2.5), (int)(points.get(i)[1]-2.5), 5, 5);
-			}
-		}
-
-		for(int i =0 ; i<game.obstacles.size();i++) {
-			g.setColor(Color.BLACK);
-
-			int[] x=new int[game.obstacles.get(i).points.size()];
-			int[] y=new int[game.obstacles.get(i).points.size()];
-
-			for(int i2 = 0; i2< game.obstacles.get(i).points.size(); i2++) {
-				x[i2]=(int)(game.obstacles.get(i).points.get(i2)[0]);
-				y[i2]=(int)(game.obstacles.get(i).points.get(i2)[1]);
-			}
-
-			g.drawPolygon(x,y,game.obstacles.get(i).points.size());
-		}
 	}
 
 	@Override
@@ -131,6 +138,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 					if(points.size() > 2) {
 						Obstacle o = new Obstacle(points);
 						game.obstacles.add(o);
+						game.run_sim=true;
 					}
 					creating_obstacle = !creating_obstacle;
 					System.out.println("Obstacle Created!");
