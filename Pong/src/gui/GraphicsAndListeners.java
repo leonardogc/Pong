@@ -22,7 +22,7 @@ import logic.Game;
 
 public class GraphicsAndListeners extends JPanel implements KeyListener, MouseListener{
 	
-	public Game space;
+	public Game game;
 	public GraphicInterface graphics;
 	public boolean playing;
 	private LoopThread thread;
@@ -39,7 +39,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	
 		creating_obstacle=false;
 		
-		space=new Game();
+		game=new Game();
 		this.graphics=g;
 		
 		playing=false;
@@ -60,10 +60,14 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 
 		g.setColor(Color.BLACK);
 
-		g.fillOval((int)(space.ball.pos[0]-space.ball.diameter/2),
-				(int)(space.ball.pos[1]-space.ball.diameter/2),
-				(int)(space.ball.diameter), 
-				(int)(space.ball.diameter));
+		g.fillOval((int)(game.ball.pos[0]-game.ball.diameter/2),
+				(int)(game.ball.pos[1]-game.ball.diameter/2),
+				(int)(game.ball.diameter), 
+				(int)(game.ball.diameter));
+		
+		g.fillRect((int)(game.paddle_1.pos[0]-game.paddle_1.size[0]/2), (int)(game.paddle_1.pos[1]-game.paddle_1.size[1]/2), (int)game.paddle_1.size[0], (int)game.paddle_1.size[1]);
+		g.fillRect((int)(game.paddle_2.pos[0]-game.paddle_2.size[0]/2), (int)(game.paddle_2.pos[1]-game.paddle_2.size[1]/2), (int)game.paddle_2.size[0], (int)game.paddle_2.size[1]);
+		
 
 		if(creating_obstacle) {
 			for(int i =0 ; i< points.size();i++) {
@@ -71,18 +75,18 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 			}
 		}
 
-		for(int i =0 ; i<space.obstacles.size();i++) {
+		for(int i =0 ; i<game.obstacles.size();i++) {
 			g.setColor(Color.BLACK);
 
-			int[] x=new int[space.obstacles.get(i).points.size()];
-			int[] y=new int[space.obstacles.get(i).points.size()];
+			int[] x=new int[game.obstacles.get(i).points.size()];
+			int[] y=new int[game.obstacles.get(i).points.size()];
 
-			for(int i2 = 0; i2< space.obstacles.get(i).points.size(); i2++) {
-				x[i2]=(int)(space.obstacles.get(i).points.get(i2)[0]);
-				y[i2]=(int)(space.obstacles.get(i).points.get(i2)[1]);
+			for(int i2 = 0; i2< game.obstacles.get(i).points.size(); i2++) {
+				x[i2]=(int)(game.obstacles.get(i).points.get(i2)[0]);
+				y[i2]=(int)(game.obstacles.get(i).points.get(i2)[1]);
 			}
 
-			g.drawPolygon(x,y,space.obstacles.get(i).points.size());
+			g.drawPolygon(x,y,game.obstacles.get(i).points.size());
 		}
 	}
 
@@ -101,7 +105,11 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		break;  
 		case KeyEvent.VK_LEFT:
 			playing=false;
-			space=new Game();
+			game=new Game(game.obstacles);
+			break;
+		case KeyEvent.VK_R:
+			playing=false;
+			game=new Game();
 			break;
 		case KeyEvent.VK_P:
 			this.take_pictures=!this.take_pictures;
@@ -118,7 +126,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 				if(creating_obstacle) {
 					if(points.size() > 2) {
 						Obstacle o = new Obstacle(points);
-						space.obstacles.add(o);
+						game.obstacles.add(o);
 					}
 					creating_obstacle = !creating_obstacle;
 					System.out.println("Obstacle Created!");
@@ -130,14 +138,37 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 				}
 			}
 			break;
+		case KeyEvent.VK_W:
+			game.paddle_1.move_up=true;
+			break;
+		case KeyEvent.VK_S:
+			game.paddle_1.move_down=true;
+			break;
+		case KeyEvent.VK_UP:
+			game.paddle_2.move_up=true;
+			break;
+		case KeyEvent.VK_DOWN:
+			game.paddle_2.move_down=true;
+			break;
 		}
-
-		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-	
+		switch(arg0.getKeyCode()){ 	
+		case KeyEvent.VK_W:
+			game.paddle_1.move_up=false;
+			break;
+		case KeyEvent.VK_S:
+			game.paddle_1.move_down=false;
+			break;
+		case KeyEvent.VK_UP:
+			game.paddle_2.move_up=false;
+			break;
+		case KeyEvent.VK_DOWN:
+			game.paddle_2.move_down=false;
+			break;
+		}
 	}
 
 	@Override
@@ -172,7 +203,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		graphics.panel.requestFocusInWindow();
+		graphics.panel.requestFocus();
 		
 		if(creating_obstacle) {
 			points.add(new double[] {arg0.getX(), arg0.getY()});

@@ -5,7 +5,6 @@ public class Ball {
 	public double vel[];
 	public double diameter;
 	
-	
 	public Ball(double posX,double posY,double velX,double velY,double diameter){
 		this.pos = new double[2];
 		this.vel = new double[2];

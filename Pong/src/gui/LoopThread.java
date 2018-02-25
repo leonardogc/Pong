@@ -37,7 +37,7 @@ public class LoopThread extends Thread{
 	            startTime= System.nanoTime();
 
 	            if(g.playing){
-	            	g.space.update(1/max_fps);
+	            	g.game.update(1/max_fps);
 	            	
 	            	if(g.take_pictures) {
 	            		if(counter % (int)(max_fps/60) == 0){
