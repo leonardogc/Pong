@@ -17,7 +17,8 @@ public double ball_size=25;
 public double paddle_gap=5;
 public double paddle_size_x=15;
 public double paddle_size_y=150;
-public double paddle_vel=500;
+public double paddle_1_vel=500;
+public double paddle_2_vel=800;
 public double ball_vel=800;
 public double obstacle_rotations_per_second=0.1;
 
@@ -79,8 +80,6 @@ public void update(double t){
 
 public void update_obstacle_pos(double t) {
 	double angle = obstacle_rotations_per_second*2*Math.PI*t;
-	double point_of_rotation_x;
-	double point_of_rotation_y;
 	
 	double v1_x;
 	double v1_y;
@@ -90,26 +89,15 @@ public void update_obstacle_pos(double t) {
 	
 	for(int i =0 ; i<obstacles.size();i++) {
 		if(obstacles.get(i).points.size() > 2) {
-			point_of_rotation_x=0;
-			point_of_rotation_y=0;
-			
 			for(int i2=0; i2 < obstacles.get(i).points.size(); i2++) {
-				point_of_rotation_x+=obstacles.get(i).points.get(i2)[0];
-				point_of_rotation_y+=obstacles.get(i).points.get(i2)[1];
-			}
-			
-			point_of_rotation_x/=obstacles.get(i).points.size();
-			point_of_rotation_y/=obstacles.get(i).points.size();
-			
-			for(int i2=0; i2 < obstacles.get(i).points.size(); i2++) {
-				v1_x=obstacles.get(i).points.get(i2)[0]-point_of_rotation_x;
-				v1_y=obstacles.get(i).points.get(i2)[1]-point_of_rotation_y;
+				v1_x=obstacles.get(i).points.get(i2)[0]-obstacles.get(i).point_of_rotation[0];
+				v1_y=obstacles.get(i).points.get(i2)[1]-obstacles.get(i).point_of_rotation[1];
 				
 				v2_x=Math.cos(angle)*v1_x-Math.sin(angle)*v1_y;
 				v2_y=Math.sin(angle)*v1_x+Math.cos(angle)*v1_y;
 				
-				obstacles.get(i).points.get(i2)[0]=point_of_rotation_x+v2_x;
-				obstacles.get(i).points.get(i2)[1]=point_of_rotation_y+v2_y;
+				obstacles.get(i).points.get(i2)[0]=obstacles.get(i).point_of_rotation[0]+v2_x;
+				obstacles.get(i).points.get(i2)[1]=obstacles.get(i).point_of_rotation[1]+v2_y;
 			}
 		}
 	}
@@ -202,18 +190,18 @@ public void update_paddle_pos(double t) {
 	}
 	
 	if(paddle_1.move_up && paddle_1.pos[1] > dy+paddle_1.size[1]/2) {
-		paddle_1.pos[1]=paddle_1.pos[1]-paddle_vel*t;
+		paddle_1.pos[1]=paddle_1.pos[1]-paddle_1_vel*t;
 	}
 	else if(paddle_1.move_down && paddle_1.pos[1] < dy+game_size[1]-paddle_1.size[1]/2) {
-		paddle_1.pos[1]=paddle_1.pos[1]+paddle_vel*t;
+		paddle_1.pos[1]=paddle_1.pos[1]+paddle_1_vel*t;
 	}
 	
 	
 	if(paddle_2.move_up && paddle_2.pos[1] > dy+paddle_2.size[1]/2) {
-		paddle_2.pos[1]=paddle_2.pos[1]-paddle_vel*t;
+		paddle_2.pos[1]=paddle_2.pos[1]-paddle_2_vel*t;
 	}
 	else if(paddle_2.move_down && paddle_2.pos[1] < dy+game_size[1]-paddle_2.size[1]/2) {
-		paddle_2.pos[1]=paddle_2.pos[1]+paddle_vel*t;
+		paddle_2.pos[1]=paddle_2.pos[1]+paddle_2_vel*t;
 	}
 }
 
