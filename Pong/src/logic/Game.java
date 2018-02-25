@@ -1,5 +1,6 @@
 package logic;
 
+import java.util.Random;
 import java.util.Vector;
 
 
@@ -10,20 +11,31 @@ public Vector<Obstacle> obstacles;
 public Paddle paddle_1;
 public Paddle paddle_2;
 
-
 public double screen_size[]=new double[]{1366,735};
-public double game_size[] = new double[] {1000, 500};
+public double game_size[] = new double[] {1200, 600};
+public double ball_size=25;
+public double paddle_gap=5;
+public double paddle_size_x=15;
+public double paddle_size_y=150;
+public double paddle_vel=500;
+public double ball_vel=800;
+
 public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
-public double ball_size=20;
-public double paddle_gap=15;
-public double paddle_size_x=10;
-public double paddle_size_y=100;
-public double paddle_vel=400;
 
 public Game(){
+	
+	double angle = new Random().nextInt(121)-60;
+	double side = new Random().nextInt(2);
+
+	if(side==0) {
+		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
+	}
+	else {
+		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,-ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
+	}
+	
 	obstacles=new Vector<Obstacle>();
-	ball =new Ball(game_size[0]/2+dx,game_size[1]/2+dy,-600, 0, ball_size);
 	
 	Vector <double []> points = new Vector<double[]>();
 	points.add(new double[] {dx,dy});
@@ -39,16 +51,26 @@ public Game(){
 	o = new Obstacle(points);
 	obstacles.add(o);
 	
-	paddle_1=new Paddle(dx+paddle_gap,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
-	paddle_2=new Paddle(game_size[0]+dx-paddle_gap,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
+	paddle_1=new Paddle(paddle_size_x/2+paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
+	paddle_2=new Paddle(game_size[0]-paddle_size_x/2-paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
 }
 
 public Game(Vector<Obstacle> obstacles){
-	this.obstacles=obstacles;
-	ball =new Ball(game_size[0]/2+dx,game_size[1]/2+dy,-600, 0, ball_size);
 	
-	paddle_1=new Paddle(dx+paddle_gap,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
-	paddle_2=new Paddle(game_size[0]+dx-paddle_gap,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
+	double angle = new Random().nextInt(121)-60;
+	double side = new Random().nextInt(2);
+
+	if(side==0) {
+		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
+	}
+	else {
+		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,-ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
+	}
+	
+	this.obstacles=obstacles;
+	
+	paddle_1=new Paddle(paddle_size_x/2+paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
+	paddle_2=new Paddle(game_size[0]-paddle_size_x/2-paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
 }
 
 public void update(double t){

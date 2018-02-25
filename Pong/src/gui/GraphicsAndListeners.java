@@ -68,7 +68,9 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		g.fillRect((int)(game.paddle_1.pos[0]-game.paddle_1.size[0]/2), (int)(game.paddle_1.pos[1]-game.paddle_1.size[1]/2), (int)game.paddle_1.size[0], (int)game.paddle_1.size[1]);
 		g.fillRect((int)(game.paddle_2.pos[0]-game.paddle_2.size[0]/2), (int)(game.paddle_2.pos[1]-game.paddle_2.size[1]/2), (int)game.paddle_2.size[0], (int)game.paddle_2.size[1]);
 		
-
+		//g.drawRect((int)(game.dx), (int)(game.dy), (int)game.game_size[0], (int)game.game_size[1]);
+		
+		
 		if(creating_obstacle) {
 			for(int i =0 ; i< points.size();i++) {
 				g.fillOval((int)(points.get(i)[0]-2.5), (int)(points.get(i)[1]-2.5), 5, 5);
