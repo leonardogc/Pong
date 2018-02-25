@@ -23,6 +23,10 @@ public double ball_vel=800;
 public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
 
+public boolean ai_enabled = true;
+public boolean run_sim = true;
+public double target_y=0;
+
 public Game(){
 	
 	double angle = new Random().nextInt(121)-60;
@@ -55,39 +59,72 @@ public Game(){
 	paddle_2=new Paddle(game_size[0]-paddle_size_x/2-paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
 }
 
-public Game(Vector<Obstacle> obstacles){
-	
-	double angle = new Random().nextInt(121)-60;
-	double side = new Random().nextInt(2);
-
-	if(side==0) {
-		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
-	}
-	else {
-		ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,-ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
-	}
-	
-	this.obstacles=obstacles;
-	
-	paddle_1=new Paddle(paddle_size_x/2+paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
-	paddle_2=new Paddle(game_size[0]-paddle_size_x/2-paddle_gap+dx,game_size[1]/2+dy,paddle_size_x,paddle_size_y);
-}
-
 public void update(double t){
 	ball.update_Pos(t);
 	update_paddle_pos(t);
 	
 	update_obstacle_collisions();
 	update_paddle_collisions();
+	if(run_sim && ai_enabled) {
+		run_sim();
+	}
+}
+
+public void run_sim() {
+	Game g = new Game();
+	g.obstacles=obstacles;
+	g.ball.pos=new double[] {ball.pos[0], ball.pos[1]};
+	g.ball.vel=new double[] {ball.vel[0], ball.vel[1]};
+	
+	
+	while(!(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2)) {
+		g.ball.update_Pos((double)1/(double)400);
+		g.update_obstacle_collisions();
+		
+		if(g.ball.pos[0] > g.dx+g.game_size[0] || g.ball.pos[0] < g.dx) {
+			break;
+		}
+	}
+
+	while(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2) {
+		g.ball.update_Pos((double)1/(double)400);
+		g.update_obstacle_collisions();
+	}
+		
+	
+	if(g.ball.pos[0] <= g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2) {
+		int hit = new Random().nextInt(7)-3;
+		target_y=g.ball.pos[1]+hit*paddle_1.size[1]/9;
+	}else {
+		target_y=paddle_1.pos[1];
+	}
+	
+	run_sim=false;
 }
 
 public void update_paddle_pos(double t) {
+	if(ai_enabled) {
+		if(paddle_1.pos[1] < target_y-1) {
+			paddle_1.move_down=true;
+			paddle_1.move_up=false;
+		}
+		else if(paddle_1.pos[1] > target_y+1) {
+			paddle_1.move_down=false;
+			paddle_1.move_up=true;
+		}
+		else {
+			paddle_1.move_down=false;
+			paddle_1.move_up=false;
+		}
+	}
+	
 	if(paddle_1.move_up && paddle_1.pos[1] > dy+paddle_1.size[1]/2) {
 		paddle_1.pos[1]=paddle_1.pos[1]-paddle_vel*t;
 	}
 	else if(paddle_1.move_down && paddle_1.pos[1] < dy+game_size[1]-paddle_1.size[1]/2) {
 		paddle_1.pos[1]=paddle_1.pos[1]+paddle_vel*t;
 	}
+	
 	
 	if(paddle_2.move_up && paddle_2.pos[1] > dy+paddle_2.size[1]/2) {
 		paddle_2.pos[1]=paddle_2.pos[1]-paddle_vel*t;
@@ -148,29 +185,37 @@ public void update_paddle_collisions() {
 		
 		ball.vel[0]=vel*Math.cos(Math.toRadians(angle));
 		ball.vel[1]=-vel*Math.sin(Math.toRadians(angle));
+		run_sim=true;
 		return;
 	}
 	
 	if(check_line_obstacle_collision(p2, p3)) {
+		run_sim=true;
 		return;
 	}
 	if(check_line_obstacle_collision(p3, p4)) {
+		run_sim=true;
 		return;
 	}
 	if(check_line_obstacle_collision(p4, p1)) {
+		run_sim=true;
 		return;
 	}
 	
 	if(check_point_obstacle_collision(p1)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p2)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p3)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p4)) {
+		run_sim=true;
 		return;
 	}
 
@@ -218,29 +263,37 @@ public void update_paddle_collisions() {
 		
 		ball.vel[0]=-vel*Math.cos(Math.toRadians(angle));
 		ball.vel[1]=-vel*Math.sin(Math.toRadians(angle));
+		run_sim=true;
 		return;
 	}
 	
 	if(check_line_obstacle_collision(p2, p3)) {
+		run_sim=true;
 		return;
 	}
 	if(check_line_obstacle_collision(p3, p4)) {
+		run_sim=true;
 		return;
 	}
 	if(check_line_obstacle_collision(p4, p1)) {
+		run_sim=true;
 		return;
 	}
 	
 	if(check_point_obstacle_collision(p1)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p2)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p3)) {
+		run_sim=true;
 		return;
 	}
 	if(check_point_obstacle_collision(p4)) {
+		run_sim=true;
 		return;
 	}
 }

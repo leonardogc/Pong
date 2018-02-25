@@ -107,7 +107,9 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		break;  
 		case KeyEvent.VK_LEFT:
 			playing=false;
-			game=new Game(game.obstacles);
+			Vector <Obstacle> obst=game.obstacles;
+			game=new Game();
+			game.obstacles=obst;
 			break;
 		case KeyEvent.VK_R:
 			playing=false;
@@ -141,10 +143,14 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 			}
 			break;
 		case KeyEvent.VK_W:
-			game.paddle_1.move_up=true;
+			if(!game.ai_enabled) {
+				game.paddle_1.move_up=true;
+			}
 			break;
 		case KeyEvent.VK_S:
-			game.paddle_1.move_down=true;
+			if(!game.ai_enabled) {
+				game.paddle_1.move_down=true;
+			}
 			break;
 		case KeyEvent.VK_UP:
 			game.paddle_2.move_up=true;
@@ -159,10 +165,14 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	public void keyReleased(KeyEvent arg0) {
 		switch(arg0.getKeyCode()){ 	
 		case KeyEvent.VK_W:
-			game.paddle_1.move_up=false;
+			if(!game.ai_enabled) {
+				game.paddle_1.move_up=false;
+			}
 			break;
 		case KeyEvent.VK_S:
-			game.paddle_1.move_down=false;
+			if(!game.ai_enabled) {
+				game.paddle_1.move_down=false;
+			}
 			break;
 		case KeyEvent.VK_UP:
 			game.paddle_2.move_up=false;
