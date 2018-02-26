@@ -264,7 +264,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -272,10 +272,27 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if(game.ai_paddle_1_enabled && !game.ai_paddle_2_enabled) {
-			game.paddle_2.pos[1] = e.getY();
+			if(e.getY() < game.dy+game.paddle_2.size[1]/2) {
+				game.paddle_2.pos[1] = game.dy+game.paddle_2.size[1]/2;
+			}
+			else if(e.getY() > game.dy+game.game_size[1]-game.paddle_2.size[1]/2){
+				game.paddle_2.pos[1] = game.dy+game.game_size[1]-game.paddle_2.size[1]/2;
+			}
+			else {
+				game.paddle_2.pos[1] = e.getY();
+			}
 		}
-		else if(!game.ai_paddle_1_enabled && game.ai_paddle_2_enabled) {
-			game.paddle_1.pos[1] = e.getY();
+
+		if(!game.ai_paddle_1_enabled && game.ai_paddle_2_enabled) {
+			if(e.getY() < game.dy+game.paddle_1.size[1]/2) {
+				game.paddle_1.pos[1] = game.dy+game.paddle_1.size[1]/2;
+			}
+			else if(e.getY() > game.dy+game.game_size[1]-game.paddle_1.size[1]/2){
+				game.paddle_1.pos[1] = game.dy+game.game_size[1]-game.paddle_1.size[1]/2;
+			}
+			else {
+				game.paddle_1.pos[1] = e.getY();
+			}
 		}
 	}
 
