@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import logic.Obstacle;
 import logic.Game;
 
-public class GraphicsAndListeners extends JPanel implements KeyListener, MouseListener{
+public class GraphicsAndListeners extends JPanel implements KeyListener, MouseListener, MouseMotionListener{
 	
 	public Game game;
 	public GraphicInterface graphics;
@@ -36,6 +36,7 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	public GraphicsAndListeners(GraphicInterface g){
 		addKeyListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	
 		creating_obstacle=false;
 		
@@ -256,6 +257,26 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
+	}
+
+
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if(game.ai_paddle_1_enabled && !game.ai_paddle_2_enabled) {
+			game.paddle_2.pos[1] = e.getY();
+		}
+		else if(!game.ai_paddle_1_enabled && game.ai_paddle_2_enabled) {
+			game.paddle_1.pos[1] = e.getY();
+		}
 	}
 
 }

@@ -18,7 +18,7 @@ public double paddle_gap=5;
 public double paddle_size_x=15;
 public double paddle_size_y=150;
 public double paddle_1_vel=500;
-public double paddle_2_vel=800;
+public double paddle_2_vel=500;
 public double ball_vel=800;
 public double obstacle_rotations_per_second=0.1;
 
@@ -27,6 +27,8 @@ public double dy=(screen_size[1]-game_size[1])/2;
 
 public boolean ai_paddle_1_enabled = true;
 public boolean ai_paddle_2_enabled = false;
+
+
 public boolean run_sim;
 public double target_y_paddle_1;
 public double target_y_paddle_2;
