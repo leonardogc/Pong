@@ -26,7 +26,7 @@ public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
 
 public boolean ai_paddle_1_enabled = true;
-public boolean ai_paddle_2_enabled = true;
+public boolean ai_paddle_2_enabled = false;
 
 
 public boolean run_sim;
