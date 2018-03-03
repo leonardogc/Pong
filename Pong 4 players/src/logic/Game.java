@@ -98,7 +98,6 @@ public Game(){
 	paddles.add(new Paddle(dx+game_size[0]/2, dy-paddle_gap, Pointing.down, true));
 	paddles.add(new Paddle(dx-paddle_gap, dy+game_size[1]/2, Pointing.right, true));
 	paddles.add(new Paddle(dx+game_size[0]+paddle_gap, dy+game_size[1]/2, Pointing.left, false));
-	
 }
 
 public void update(double t){
