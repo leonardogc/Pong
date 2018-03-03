@@ -13,8 +13,8 @@ public class Paddle {
 	public double pos_buffer[];
 	public boolean ai;
 	
-	public static final double paddle_size=150;
-	public static final double paddle_radius=150;
+	public static final double paddle_size=100;
+	public static final double paddle_radius=150; // must be greater or equal than paddle_size/2
 	public static final double number_of_points=8;
 	public static final double paddle_vel=500;
 	
