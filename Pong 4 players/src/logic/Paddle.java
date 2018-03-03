@@ -13,7 +13,7 @@ public class Paddle {
 	public double pos_buffer[];
 	public boolean ai;
 	
-	public static final double paddle_size_y=150;
+	public static final double paddle_size=150;
 	public static final double paddle_radius=150;
 	public static final double number_of_points=8;
 	public static final double paddle_vel=500;
@@ -39,7 +39,7 @@ public class Paddle {
 		
 		double rotation=0;
 		
-		y=Math.sqrt(Math.pow(paddle_radius,2)-Math.pow(paddle_size_y/2, 2));
+		y=Math.sqrt(Math.pow(paddle_radius,2)-Math.pow(paddle_size/2, 2));
 		x=Math.sqrt(Math.pow(paddle_radius,2)-Math.pow(y, 2));
 		
 		v1_x=x;
@@ -179,18 +179,18 @@ public class Paddle {
 	}
 	
 	public void setBuffer(double x, double y) {
-		if(x > Game.dx+Game.game_size[0]-paddle_size_y/2) {
-			x=Game.dx+Game.game_size[0]-paddle_size_y/2;
+		if(x > Game.dx+Game.game_size[0]-paddle_size/2) {
+			x=Game.dx+Game.game_size[0]-paddle_size/2;
 		}
-		else if(x < Game.dx+paddle_size_y/2) {
-			x=Game.dx+paddle_size_y/2;
+		else if(x < Game.dx+paddle_size/2) {
+			x=Game.dx+paddle_size/2;
 		}
 		
-		if(y > Game.dy+Game.game_size[1]-paddle_size_y/2) {
-			y = Game.dy+Game.game_size[1]-paddle_size_y/2;
+		if(y > Game.dy+Game.game_size[1]-paddle_size/2) {
+			y = Game.dy+Game.game_size[1]-paddle_size/2;
 		}
-		else if(y < Game.dy+paddle_size_y/2) {
-			y = Game.dy+paddle_size_y/2;
+		else if(y < Game.dy+paddle_size/2) {
+			y = Game.dy+paddle_size/2;
 		}
 		
 		pos_buffer[0]=x;

@@ -15,7 +15,7 @@ public Vector<Paddle> paddles;
 public static final double screen_size[]=new double[]{1366,735};
 public static final double game_size[] = new double[] {600, 600};
 public static final double wall_length=300;
-public static final double ball_size=25;
+public static final double ball_diameter=25;
 public static final double paddle_gap=20;
 public static final double ball_vel=500;
 public static final double obstacle_rotations_per_second=0.1;
@@ -30,7 +30,7 @@ public Game(){
 	
 	double angle = new Random().nextInt(360);
 
-	ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_size);
+	ball = new Ball(game_size[0]/2+dx,game_size[1]/2+dy,ball_vel*Math.cos(Math.toRadians(angle)), -ball_vel*Math.sin(Math.toRadians(angle)), ball_diameter);
 	
 	obstacles=new Vector<Obstacle>();
 	
@@ -164,27 +164,27 @@ public void run_sim(double t) {
 	g.ball.vel=new double[] {ball.vel[0], ball.vel[1]};
 	
 	
-	while(!(g.ball.pos[0] > Game.dx - Game.paddle_gap +g.ball.diameter/2 &&
-			g.ball.pos[0] < Game.dx + Game.game_size[0] + Game.paddle_gap -g.ball.diameter/2 &&
-			g.ball.pos[1] > Game.dy - Game.paddle_gap +g.ball.diameter/2 &&
-			g.ball.pos[1] < Game.dy + Game.game_size[1] + Game.paddle_gap -g.ball.diameter/2)) {
+	while(!(g.ball.pos[0] > Game.dx - Game.paddle_gap +Game.ball_diameter/2 &&
+			g.ball.pos[0] < Game.dx + Game.game_size[0] + Game.paddle_gap -Game.ball_diameter/2 &&
+			g.ball.pos[1] > Game.dy - Game.paddle_gap +Game.ball_diameter/2 &&
+			g.ball.pos[1] < Game.dy + Game.game_size[1] + Game.paddle_gap -Game.ball_diameter/2)) {
 		
 		g.ball.update_Pos(t);
 		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
 		
-		if(g.ball.pos[0] > Game.dx + Game.game_size[0] + Game.paddle_gap +g.ball.diameter/2 || 
-				g.ball.pos[0] < Game.dx - Game.paddle_gap -g.ball.diameter/2 ||
-				g.ball.pos[1] > Game.dy + Game.game_size[1] + Game.paddle_gap +g.ball.diameter/2 || 
-				g.ball.pos[1] < Game.dy - Game.paddle_gap -g.ball.diameter/2) {
+		if(g.ball.pos[0] > Game.dx + Game.game_size[0] + Game.paddle_gap +Game.ball_diameter/2 || 
+				g.ball.pos[0] < Game.dx - Game.paddle_gap -Game.ball_diameter/2 ||
+				g.ball.pos[1] > Game.dy + Game.game_size[1] + Game.paddle_gap +Game.ball_diameter/2 || 
+				g.ball.pos[1] < Game.dy - Game.paddle_gap -Game.ball_diameter/2) {
 			break;
 		}
 	}
 
-	while (g.ball.pos[0] > Game.dx - Game.paddle_gap +g.ball.diameter/2 &&
-			g.ball.pos[0] < Game.dx + Game.game_size[0] + Game.paddle_gap -g.ball.diameter/2 &&
-			g.ball.pos[1] > Game.dy - Game.paddle_gap +g.ball.diameter/2 &&
-			g.ball.pos[1] < Game.dy + Game.game_size[1] + Game.paddle_gap -g.ball.diameter/2) {
+	while (g.ball.pos[0] > Game.dx - Game.paddle_gap +Game.ball_diameter/2 &&
+			g.ball.pos[0] < Game.dx + Game.game_size[0] + Game.paddle_gap -Game.ball_diameter/2 &&
+			g.ball.pos[1] > Game.dy - Game.paddle_gap +Game.ball_diameter/2 &&
+			g.ball.pos[1] < Game.dy + Game.game_size[1] + Game.paddle_gap -Game.ball_diameter/2) {
 		g.ball.update_Pos(t);
 		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
@@ -193,40 +193,40 @@ public void run_sim(double t) {
 	
 	int hit = new Random().nextInt(7)-3;
 
-	if(g.ball.pos[0] <= Game.dx - Game.paddle_gap +g.ball.diameter/2) {
+	if(g.ball.pos[0] <= Game.dx - Game.paddle_gap +Game.ball_diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
 			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.right) {
-				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size_y/7);
+				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size/7);
 			}
 			else if(paddles.get(i).ai) {
 				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
-	else if(g.ball.pos[0] >= Game.dx + Game.game_size[0] + Game.paddle_gap -g.ball.diameter/2) {
+	else if(g.ball.pos[0] >= Game.dx + Game.game_size[0] + Game.paddle_gap -Game.ball_diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
 			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.left) {
-				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size_y/7);
+				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size/7);
 			}
 			else if(paddles.get(i).ai) {
 				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
-	else if(g.ball.pos[1] <= Game.dy - Game.paddle_gap +g.ball.diameter/2) {
+	else if(g.ball.pos[1] <= Game.dy - Game.paddle_gap +Game.ball_diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
 			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.down) {
-				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size_y/7, g.ball.pos[1]);
+				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size/7, g.ball.pos[1]);
 			}
 			else if(paddles.get(i).ai) {
 				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
-	else if(g.ball.pos[1] >= Game.dy + Game.game_size[1] + Game.paddle_gap - g.ball.diameter/2) {
+	else if(g.ball.pos[1] >= Game.dy + Game.game_size[1] + Game.paddle_gap - Game.ball_diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
 			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.up) {
-				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size_y/7, g.ball.pos[1]);
+				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size/7, g.ball.pos[1]);
 			}
 			else if(paddles.get(i).ai) {
 				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
@@ -236,6 +236,7 @@ public void run_sim(double t) {
 
 	run_sim=false;
 }
+
 
 public void update_paddle_pos(double t) {
 	for(int i=0; i< paddles.size(); i++) {
