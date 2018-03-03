@@ -59,6 +59,10 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
+		//draw obstacles
+		
+		g.setColor(Color.ORANGE);
+		
 		for(int i =0 ; i<game.obstacles.size();i++) {
 
 			int[] x=new int[game.obstacles.get(i).points.size()];
@@ -68,17 +72,11 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 				x[i2]=(int)(game.obstacles.get(i).points.get(i2)[0]);
 				y[i2]=(int)(game.obstacles.get(i).points.get(i2)[1]);
 			}
-			
-			if(game.obstacles.get(i).points.size()==2) {
-				g.setColor(Color.BLACK);
-			}
-			else {
-				g.setColor(Color.ORANGE);
-			}
 
 			g.fillPolygon(x,y,game.obstacles.get(i).points.size());
-			g.drawPolygon(x,y,game.obstacles.get(i).points.size());
 		}
+		
+		//draw points
 		
 		g.setColor(Color.BLACK);
 		
@@ -88,13 +86,29 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 			}
 		}
 		
+		//draw ball
+		
 		g.fillOval((int)(game.ball.pos[0]-game.ball.diameter/2),
 				(int)(game.ball.pos[1]-game.ball.diameter/2),
 				(int)(game.ball.diameter), 
 				(int)(game.ball.diameter));
 		
-		g.fillRect((int)(game.paddle_1.pos[0]-game.paddle_1.size[0]/2), (int)(game.paddle_1.pos[1]-game.paddle_1.size[1]/2), (int)game.paddle_1.size[0], (int)game.paddle_1.size[1]);
-		g.fillRect((int)(game.paddle_2.pos[0]-game.paddle_2.size[0]/2), (int)(game.paddle_2.pos[1]-game.paddle_2.size[1]/2), (int)game.paddle_2.size[0], (int)game.paddle_2.size[1]);
+		//draw paddles
+		
+		g.setColor(Color.RED);
+		
+		for(int i =0 ; i<game.paddles.size();i++) {
+
+			int[] x=new int[game.paddles.get(i).p.points.size()];
+			int[] y=new int[game.paddles.get(i).p.points.size()];
+
+			for(int i2 = 0; i2< game.paddles.get(i).p.points.size(); i2++) {
+				x[i2]=(int)(game.paddles.get(i).p.points.get(i2)[0]);
+				y[i2]=(int)(game.paddles.get(i).p.points.get(i2)[1]);
+			}
+
+			g.fillPolygon(x,y,game.paddles.get(i).p.points.size());
+		}
 		
 		//g.drawRect((int)(game.dx), (int)(game.dy), (int)game.game_size[0], (int)game.game_size[1]);
 		
@@ -151,53 +165,12 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 				}
 			}
 			break;
-		case KeyEvent.VK_W:
-			if(!game.ai_paddle_1_enabled) {
-				game.paddle_1.move_up=true;
-			}
-			break;
-		case KeyEvent.VK_S:
-			if(!game.ai_paddle_1_enabled) {
-				game.paddle_1.move_down=true;
-			}
-			break;
-		case KeyEvent.VK_UP:
-			if(!game.ai_paddle_2_enabled) {
-				game.paddle_2.move_up=true;
-			}
-			break;
-		case KeyEvent.VK_DOWN:
-			if(!game.ai_paddle_2_enabled) {
-				game.paddle_2.move_down=true;
-			}
-			break;
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		switch(arg0.getKeyCode()){ 	
-		case KeyEvent.VK_W:
-			if(!game.ai_paddle_1_enabled) {
-				game.paddle_1.move_up=false;
-			}
-			break;
-		case KeyEvent.VK_S:
-			if(!game.ai_paddle_1_enabled) {
-				game.paddle_1.move_down=false;
-			}
-			break;
-		case KeyEvent.VK_UP:
-			if(!game.ai_paddle_2_enabled) {
-				game.paddle_2.move_up=false;
-			}
-			break;
-		case KeyEvent.VK_DOWN:
-			if(!game.ai_paddle_2_enabled) {
-				game.paddle_2.move_down=false;
-			}
-			break;
-		}
+		
 	}
 
 	@Override
@@ -271,27 +244,9 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if(game.ai_paddle_1_enabled && !game.ai_paddle_2_enabled) {
-			if(e.getY() < game.dy+game.paddle_2.size[1]/2) {
-				game.paddle_2.pos[1] = game.dy+game.paddle_2.size[1]/2;
-			}
-			else if(e.getY() > game.dy+game.game_size[1]-game.paddle_2.size[1]/2){
-				game.paddle_2.pos[1] = game.dy+game.game_size[1]-game.paddle_2.size[1]/2;
-			}
-			else {
-				game.paddle_2.pos[1] = e.getY();
-			}
-		}
-
-		if(!game.ai_paddle_1_enabled && game.ai_paddle_2_enabled) {
-			if(e.getY() < game.dy+game.paddle_1.size[1]/2) {
-				game.paddle_1.pos[1] = game.dy+game.paddle_1.size[1]/2;
-			}
-			else if(e.getY() > game.dy+game.game_size[1]-game.paddle_1.size[1]/2){
-				game.paddle_1.pos[1] = game.dy+game.game_size[1]-game.paddle_1.size[1]/2;
-			}
-			else {
-				game.paddle_1.pos[1] = e.getY();
+		for(int i=0; i< game.paddles.size(); i++) {
+			if(!game.paddles.get(i).ai) {
+				game.paddles.get(i).setBuffer(e.getX(), e.getY());
 			}
 		}
 	}

@@ -165,4 +165,23 @@ public class Paddle {
 			p.points.get(i)[1]+=v1_y;
 		}
 	}
+	
+	public void setBuffer(double x, double y) {
+		if(x > Game.dx+Game.game_size[0]-paddle_size_y/2) {
+			x=Game.dx+Game.game_size[0]-paddle_size_y/2;
+		}
+		else if(x < Game.dx+paddle_size_y/2) {
+			x=Game.dx+paddle_size_y/2;
+		}
+		
+		if(y > Game.dy+Game.game_size[1]-paddle_size_y/2) {
+			y = Game.dy+Game.game_size[1]-paddle_size_y/2;
+		}
+		else if(y < Game.dy+paddle_size_y/2) {
+			y = Game.dy+paddle_size_y/2;
+		}
+		
+		pos_buffer[0]=x;
+		pos_buffer[1]=y;
+	}
 }

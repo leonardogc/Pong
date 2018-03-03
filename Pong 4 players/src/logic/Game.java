@@ -16,7 +16,7 @@ public static final double screen_size[]=new double[]{1366,735};
 public static final double game_size[] = new double[] {600, 600};
 public static final double wall_length=300;
 public static final double ball_size=25;
-public static final double paddle_gap=5;
+public static final double paddle_gap=0;
 public static final double ball_vel=800;
 public static final double obstacle_rotations_per_second=0.1;
 
@@ -94,10 +94,10 @@ public Game(){
 	
 	paddles = new Vector<Paddle>();
 	
-	paddles.add(new Paddle(dx, dy, Pointing.up, false));
-	paddles.add(new Paddle(dx, dy, Pointing.down, false));
-	paddles.add(new Paddle(dx, dy, Pointing.right, false));
-	paddles.add(new Paddle(dx, dy, Pointing.left, false));
+	paddles.add(new Paddle(dx+game_size[0]/2, dy+game_size[1]+paddle_gap, Pointing.up, false));
+	paddles.add(new Paddle(dx+game_size[0]/2, dy-paddle_gap, Pointing.down, false));
+	paddles.add(new Paddle(dx-paddle_gap, dy+game_size[1]/2, Pointing.right, false));
+	paddles.add(new Paddle(dx+game_size[0]+paddle_gap, dy+game_size[1]/2, Pointing.left, false));
 	
 }
 
