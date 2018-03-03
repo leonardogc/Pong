@@ -17,7 +17,7 @@ public static final double game_size[] = new double[] {600, 600};
 public static final double wall_length=300;
 public static final double ball_size=25;
 public static final double paddle_gap=20;
-public static final double ball_vel=100;
+public static final double ball_vel=500;
 public static final double obstacle_rotations_per_second=0.1;
 
 public static final double dx=(screen_size[0]-game_size[0])/2;
@@ -94,9 +94,9 @@ public Game(){
 	
 	paddles = new Vector<Paddle>();
 	
-	paddles.add(new Paddle(dx+game_size[0]/2, dy+game_size[1]+paddle_gap, Pointing.up, false));
-	paddles.add(new Paddle(dx+game_size[0]/2, dy-paddle_gap, Pointing.down, false));
-	paddles.add(new Paddle(dx-paddle_gap, dy+game_size[1]/2, Pointing.right, false));
+	paddles.add(new Paddle(dx+game_size[0]/2, dy+game_size[1]+paddle_gap, Pointing.up, true));
+	paddles.add(new Paddle(dx+game_size[0]/2, dy-paddle_gap, Pointing.down, true));
+	paddles.add(new Paddle(dx-paddle_gap, dy+game_size[1]/2, Pointing.right, true));
 	paddles.add(new Paddle(dx+game_size[0]+paddle_gap, dy+game_size[1]/2, Pointing.left, false));
 	
 }
@@ -195,29 +195,41 @@ public void run_sim(double t) {
 
 	if(g.ball.pos[0] <= Game.dx - Game.paddle_gap +g.ball.diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
-			if(!paddles.get(i).ai && paddles.get(i).pointing == Pointing.right) {
+			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.right) {
 				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size_y/7);
+			}
+			else if(paddles.get(i).ai) {
+				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
 	else if(g.ball.pos[0] >= Game.dx + Game.game_size[0] + Game.paddle_gap -g.ball.diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
-			if(!paddles.get(i).ai && paddles.get(i).pointing == Pointing.left) {
+			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.left) {
 				paddles.get(i).setBuffer(g.ball.pos[0], g.ball.pos[1]+hit*Paddle.paddle_size_y/7);
+			}
+			else if(paddles.get(i).ai) {
+				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
 	else if(g.ball.pos[1] <= Game.dy - Game.paddle_gap +g.ball.diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
-			if(!paddles.get(i).ai && paddles.get(i).pointing == Pointing.down) {
+			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.down) {
 				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size_y/7, g.ball.pos[1]);
+			}
+			else if(paddles.get(i).ai) {
+				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}
 	else if(g.ball.pos[1] >= Game.dy + Game.game_size[1] + Game.paddle_gap - g.ball.diameter/2) {
 		for(int i =0; i< paddles.size(); i++) {
-			if(!paddles.get(i).ai && paddles.get(i).pointing == Pointing.up) {
+			if(paddles.get(i).ai && paddles.get(i).pointing == Pointing.up) {
 				paddles.get(i).setBuffer(g.ball.pos[0]+hit*Paddle.paddle_size_y/7, g.ball.pos[1]);
+			}
+			else if(paddles.get(i).ai) {
+				paddles.get(i).setBuffer(g.paddles.get(i).pos[0], g.paddles.get(i).pos[1]);
 			}
 		}
 	}

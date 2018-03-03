@@ -126,7 +126,7 @@ public class Paddle {
 
 		v1_t=Math.sqrt(v1_x*v1_x+v1_y*v1_y);
 
-		if(v1_t > 0.1) {
+		if(v1_t > 1.25) {
 			v1_x/=v1_t;
 			v1_y/=v1_t;
 		}
