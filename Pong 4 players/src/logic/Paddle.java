@@ -126,8 +126,14 @@ public class Paddle {
 
 		v1_t=Math.sqrt(v1_x*v1_x+v1_y*v1_y);
 
-		v1_x/=v1_t;
-		v1_y/=v1_t;
+		if(v1_t > 0.1) {
+			v1_x/=v1_t;
+			v1_y/=v1_t;
+		}
+		else {
+			v1_x=0;
+			v1_y=0;
+		}
 
 		v1_x*=paddle_vel*t;
 		v1_y*=paddle_vel*t;
@@ -136,6 +142,9 @@ public class Paddle {
 			p.points.get(i)[0]+=v1_x;
 			p.points.get(i)[1]+=v1_y;
 		}
+		
+		pos[0]+=v1_x;
+		pos[1]+=v1_y;
 	}
 	
 	public void update_pos() {
@@ -164,6 +173,9 @@ public class Paddle {
 			p.points.get(i)[0]+=v1_x;
 			p.points.get(i)[1]+=v1_y;
 		}
+		
+		pos[0]+=v1_x;
+		pos[1]+=v1_y;
 	}
 	
 	public void setBuffer(double x, double y) {

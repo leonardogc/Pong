@@ -61,8 +61,6 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 		
 		//draw obstacles
 		
-		g.setColor(Color.ORANGE);
-		
 		for(int i =0 ; i<game.obstacles.size();i++) {
 
 			int[] x=new int[game.obstacles.get(i).points.size()];
@@ -72,8 +70,16 @@ public class GraphicsAndListeners extends JPanel implements KeyListener, MouseLi
 				x[i2]=(int)(game.obstacles.get(i).points.get(i2)[0]);
 				y[i2]=(int)(game.obstacles.get(i).points.get(i2)[1]);
 			}
+			
+			if(game.obstacles.get(i).points.size()==2) {
+				g.setColor(Color.BLACK);
+			}
+			else {
+				g.setColor(Color.ORANGE);
+			}
 
 			g.fillPolygon(x,y,game.obstacles.get(i).points.size());
+			g.drawPolygon(x,y,game.obstacles.get(i).points.size());
 		}
 		
 		//draw points

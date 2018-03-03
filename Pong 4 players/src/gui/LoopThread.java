@@ -53,7 +53,6 @@ public class LoopThread extends Thread{
 	            	}
 
 	            }
-	            
 	            g.repaint();
 
 	            frameDuration=System.nanoTime()-startTime;
