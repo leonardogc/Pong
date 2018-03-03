@@ -26,7 +26,7 @@ public double dx=(screen_size[0]-game_size[0])/2;
 public double dy=(screen_size[1]-game_size[1])/2;
 
 public boolean ai_paddle_1_enabled = true;
-public boolean ai_paddle_2_enabled = false;
+public boolean ai_paddle_2_enabled = true;
 
 
 public boolean run_sim;
@@ -148,13 +148,13 @@ public void run_sim(double t) {
 	
 	if(g.ball.pos[0] <= g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2) {
 		int hit = new Random().nextInt(7)-3;
-		target_y_paddle_1=g.ball.pos[1]+hit*paddle_1.size[1]/9;
-		target_y_paddle_2=paddle_2.pos[1];
+		target_y_paddle_1=g.ball.pos[1]+hit*g.paddle_1.size[1]/9;
+		target_y_paddle_2=g.paddle_2.pos[1];
 	}
 	else if(g.ball.pos[0] >= g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2){
 		int hit = new Random().nextInt(7)-3;
-		target_y_paddle_2=g.ball.pos[1]+hit*paddle_2.size[1]/9;
-		target_y_paddle_1=paddle_1.pos[1];
+		target_y_paddle_2=g.ball.pos[1]+hit*g.paddle_2.size[1]/9;
+		target_y_paddle_1=g.paddle_1.pos[1];
 	}
 	
 	run_sim=false;
