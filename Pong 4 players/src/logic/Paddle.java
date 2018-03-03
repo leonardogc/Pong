@@ -10,15 +10,20 @@ public class Paddle {
 	public Obstacle p;
 	public Pointing pointing;
 	public double pos[];
-	public boolean move_positive;
-	public boolean move_negative;
+	public double pos_buffer[];
+	public boolean ai;
+	
+	public static final double paddle_size_y=150;
+	public static final double paddle_radius=150;
+	public static final double number_of_points=8;
+	public static final double paddle_vel=500;
 	
 	
-	public Paddle(double paddle_size_y,double paddle_radius, double number_of_points,double dx, double dy, Pointing pointing) {
+	public Paddle(double dx, double dy, Pointing pointing, boolean ai) {
 		this.pointing=pointing;
 		this.pos= new double[] {dx, dy};
-		this.move_positive=false;
-		this.move_negative=false;
+		this.pos_buffer= new double[] {dx, dy};
+		this.ai=ai;
 		
 		double y;
 		double x;
@@ -95,21 +100,69 @@ public class Paddle {
 		p = new Obstacle(points);
 	}
 	
-	public double[] size;
-	public boolean move_up;
-	public boolean move_down;
+	public void update_pos(double t) {
+		double v1_x;
+		double v1_y;
+		
+		double v1_t;
+		
+		v1_x=pos_buffer[0]-pos[0];
+		v1_y=pos_buffer[1]-pos[1];
+		
+		switch(pointing) {
+		case up:
+			v1_y=0;
+			break;
+		case down:
+			v1_y=0;
+			break;
+		case right:
+			v1_x=0;
+			break;
+		case left:
+			v1_x=0;
+			break;
+		}
+
+		v1_t=Math.sqrt(v1_x*v1_x+v1_y*v1_y);
+
+		v1_x/=v1_t;
+		v1_y/=v1_t;
+
+		v1_x*=paddle_vel*t;
+		v1_y*=paddle_vel*t;
+
+		for(int i=0; i< p.points.size(); i++) {
+			p.points.get(i)[0]+=v1_x;
+			p.points.get(i)[1]+=v1_y;
+		}
+	}
 	
-	//x and y are the position of the geometric center 
-	public Paddle(double x, double y, double size_x, double size_y) {
-		pos = new double[2];
-		pos[0]=x;
-		pos[1]=y;
+	public void update_pos() {
+		double v1_x;
+		double v1_y;
 		
-		size = new double[2];
-		size[0]=size_x;
-		size[1]=size_y;
+		v1_x=pos_buffer[0]-pos[0];
+		v1_y=pos_buffer[1]-pos[1];
 		
-		move_up=false;
-		move_down=false;
+		switch(pointing) {
+		case up:
+			v1_y=0;
+			break;
+		case down:
+			v1_y=0;
+			break;
+		case right:
+			v1_x=0;
+			break;
+		case left:
+			v1_x=0;
+			break;
+		}
+
+		for(int i=0; i< p.points.size(); i++) {
+			p.points.get(i)[0]+=v1_x;
+			p.points.get(i)[1]+=v1_y;
+		}
 	}
 }
