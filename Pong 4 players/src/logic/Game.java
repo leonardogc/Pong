@@ -13,10 +13,10 @@ public Vector<Obstacle> obstacles;
 public Vector<Paddle> paddles;
 
 public static final double screen_size[]=new double[]{1366,735};
-public static final double game_size[] = new double[] {600, 600};
+public static final double game_size[] = new double[] {400, 400};
 public static final double wall_length=300;
 public static final double ball_diameter=25;
-public static final double paddle_gap=20;
+public static final double paddle_gap=100;
 public static final double ball_vel=500;
 public static final double obstacle_rotations_per_second=0.1;
 
