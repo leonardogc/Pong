@@ -23,6 +23,8 @@ public static final double obstacle_rotations_per_second=0.1;
 public static final double dx=(screen_size[0]-game_size[0])/2;
 public static final double dy=(screen_size[1]-game_size[1])/2;
 
+public static final double exit_sim_on_seconds = 0.5; 
+
 public boolean run_sim;
 
 public Game(){
@@ -162,6 +164,7 @@ public void run_sim(double t) {
 	g.ball.pos=new double[] {ball.pos[0], ball.pos[1]};
 	g.ball.vel=new double[] {ball.vel[0], ball.vel[1]};
 	
+	long startTime = System.nanoTime();
 	
 	while(!(g.ball.pos[0] > Game.dx - Game.paddle_gap +Game.ball_diameter/2 &&
 			g.ball.pos[0] < Game.dx + Game.game_size[0] + Game.paddle_gap -Game.ball_diameter/2 &&
@@ -178,6 +181,10 @@ public void run_sim(double t) {
 				g.ball.pos[1] < Game.dy - Game.paddle_gap -Game.ball_diameter/2) {
 			break;
 		}
+		
+		if((double)(System.nanoTime()-startTime)/1000000000 > exit_sim_on_seconds) {
+			break;
+		}
 	}
 
 	while (g.ball.pos[0] > Game.dx - Game.paddle_gap +Game.ball_diameter/2 &&
@@ -187,6 +194,10 @@ public void run_sim(double t) {
 		g.ball.update_Pos(t);
 		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
+		
+		if((double)(System.nanoTime()-startTime)/1000000000 > exit_sim_on_seconds) {
+			break;
+		}
 	}
 	
 	
@@ -250,11 +261,30 @@ public void update_paddle_pos(double t) {
 
 public void update_paddle_collisions() {
 	for(int i=0; i < paddles.size();i++) {
-		if(check_obstacle_collision(paddles.get(i).p)) {
+		if(check_paddle_collision(paddles.get(i).p)) {
 			run_sim=true;
 			break;
 		}
 	}
+}
+
+public boolean check_paddle_collision(Obstacle o) {
+	//sides
+	for(int i = 0; i+1 < o.points.size(); i++) {
+		if(check_line_obstacle_collision(o.points.get(i),o.points.get(i+1))) {
+			return true;
+		}
+	}
+	
+	//points
+	
+	for(int i = 0; i < o.points.size(); i++) {
+		if(check_point_obstacle_collision(o.points.get(i))) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 public void update_obstacle_collisions() {
