@@ -28,6 +28,7 @@ public double dy=(screen_size[1]-game_size[1])/2;
 public boolean ai_paddle_1_enabled = true;
 public boolean ai_paddle_2_enabled = false;
 
+public static final double exit_sim_on_seconds = 0.5; 
 
 public boolean run_sim;
 public double target_y_paddle_1;
@@ -128,6 +129,8 @@ public void run_sim(double t) {
 	g.ball.pos=new double[] {ball.pos[0], ball.pos[1]};
 	g.ball.vel=new double[] {ball.vel[0], ball.vel[1]};
 	
+	long startTime = System.nanoTime();
+	
 	
 	while(!(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2)) {
 		g.ball.update_Pos(t);
@@ -137,12 +140,20 @@ public void run_sim(double t) {
 		if(g.ball.pos[0] > g.dx+g.game_size[0] || g.ball.pos[0] < g.dx) {
 			break;
 		}
+		
+		if((double)(System.nanoTime()-startTime)/1000000000 > exit_sim_on_seconds) {
+			break;
+		}
 	}
 
 	while(g.ball.pos[0] > g.paddle_1.pos[0] +g.paddle_1.size[0]/2+g.ball.diameter/2 && g.ball.pos[0] < g.paddle_2.pos[0]-g.paddle_2.size[0]/2-g.ball.diameter/2) {
 		g.ball.update_Pos(t);
 		g.update_obstacle_pos(t);
 		g.update_obstacle_collisions();
+		
+		if((double)(System.nanoTime()-startTime)/1000000000 > exit_sim_on_seconds) {
+			break;
+		}
 	}
 		
 	
